@@ -1,0 +1,14 @@
+*
+!*.*
+!*/
+*.o
+src.*
+.DS_Store
+build
+*.gz
+\#*\#
+*.vscode/ipch
+.history
+.vstags
+__pycache__
+*.swp
