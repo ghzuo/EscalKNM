@@ -10,11 +10,12 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-05 12:37:15
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-07-05 16:10:37
+@Last Modified Time: 2022-09-26 09:58:27
 '''
 
 
 import sys
 import gmxTools as gt
+
 
 gt.doTask("rama", sys.argv[1:])
