@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:34:28
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-08-25 11:19:36
+@Last Modified Time: 2022-10-14 08:44:17
 '''
 
 
@@ -21,27 +21,25 @@ import numpy as np
 # set the testing score function
 def entropy(count):
     p = count/np.sum(count)
-    s = 0
-    for i in p:
-        s += i*np.log(i)
-    return s
+    return sum(x*np.log(x) for x in p)
 
 
 def state_length_coef(cl):
-    ncl = []
-    ncl.append(0)
+    ncl = [0]
     prev = cl[0]
     for i in cl:
-        if(i == prev):
+        if (i == prev):
             ncl[-1] += 1
         else:
             ncl.append(1)
             prev = i
-    coef = entropy(ncl)/np.log(1/len(ncl))
-    return coef
+    return entropy(ncl)/np.log(1/len(ncl))
 
 
-def cluster(X, cl):
+def cluster(X, cl, uscore=0):
+    if (np.max(cl) <= 0):
+        return uscore
+
     # the coeff based on state length
     coef = state_length_coef(cl)
 

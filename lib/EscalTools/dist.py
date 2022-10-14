@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:25:17
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-08-22 22:06:52
+@Last Modified Time: 2022-10-14 09:16:23
 '''
 
 
@@ -21,8 +21,7 @@ import numpy as np
 def expm(data, lam=0.01):
     mat = []
     for i in data:
-        for j in data:
-            mat.append(np.exp(- lam*np.linalg.norm(i - j)))
+        mat.extend(np.exp(- lam*np.linalg.norm(i - j)) for j in data)
     mat = np.matrix(mat).reshape(len(data), len(data))
     return mat
 
@@ -30,16 +29,13 @@ def expm(data, lam=0.01):
 def manhattan(data):
     mat = []
     for i in data:
-        for j in data:
-            mat.append(np.sum([abs(vi-vj) for vi, vj in zip(i, j)]))
+        mat.extend(np.sum([abs(vi-vj) for vi, vj in zip(i, j)]) for j in data)
     mat = np.matrix(mat).reshape(len(data), len(data))
     return mat
 
 
 def euclidean(data):
-    mat = []
-    for i in data:
-        mat.append(np.linalg.norm(data - i, axis=1))
+    mat = [np.linalg.norm(data-x, axis=1) for x in data]
     return np.matrix(mat)
 
 

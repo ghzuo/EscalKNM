@@ -12,3 +12,4 @@ build
 .vstags
 __pycache__
 *.swp
+.ipynb_checkpoints

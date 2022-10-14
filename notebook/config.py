@@ -22,4 +22,4 @@ superpath += "data.Villin/2f4k/"
 
 # the subdirectories
 unfoldpath = f"{superpath}unfolding/"
-datapath = f"{superpath}htSeed/"
+datapath = f"{superpath}unfolding/cluster-360-step50/clust-gromos_0.6-gro/330/"

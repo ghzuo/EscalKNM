@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:30:05
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-08-22 17:44:39
+@Last Modified Time: 2022-10-14 09:17:25
 '''
 
 import numpy as np
@@ -18,15 +18,13 @@ import numpy as np
 
 def Lmat(Smat):
     Dmat = np.diag(np.sum(Smat, axis=0).A1)
-    Lmat = Dmat - Smat
-    return Lmat
+    return Dmat - Smat
 
 
 def NLmat_rw(Smat):
     Dmat = np.diag(np.sum(Smat, axis=0).A1)
     Lmat = Dmat - Smat
-    Nmat = np.linalg.inv(Dmat) * Lmat
-    return Nmat
+    return np.linalg.inv(Dmat) * Lmat
 
 
 def NLmat_sym(Smat):
@@ -34,5 +32,4 @@ def NLmat_sym(Smat):
     Lmat = Dmat - Smat
     iDmat = np.linalg.inv(Dmat)
     iDmatSqrt = np.sqrt(iDmat)
-    Nmat = iDmatSqrt * Lmat * iDmatSqrt
-    return Nmat
+    return iDmatSqrt * Lmat * iDmatSqrt

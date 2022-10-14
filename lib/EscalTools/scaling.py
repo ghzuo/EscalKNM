@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:32:17
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-09-01 11:45:23
+@Last Modified Time: 2022-10-14 09:22:32
 '''
 
 
@@ -29,13 +29,13 @@ class Efft:
             self.F = [self.exFFT(E)]
 
     def exFFT(self, tdata):
-        exdata = np.append(tdata, tdata[len(tdata)-1::-1])  # even extension
+        exdata = np.append(tdata, tdata[-1::-1])  # even extension
         return np.fft.rfft(exdata)
 
     def exiFFT(self, fdata, kappa):
         noutput = len(fdata) - 1
-        exdata = np.fft.irfft(fdata[0:kappa], 2*noutput)
-        return exdata[0:noutput]
+        exdata = np.fft.irfft(fdata[:kappa], 2*noutput)
+        return exdata[:noutput]
 
     def multi_exiFFT(self, fdlist, kappa):
         return np.concatenate([self.exiFFT(fd, kappa) for fd in fdlist])
@@ -57,15 +57,13 @@ class Efft:
             item[1] = self.qmc_lf(int(item[0]), self.F, self.Xx)
 
         # the result
-        result = {}
-        result['list'] = qmc
+        result = {'list': qmc}
         imax = np.argmax(qmc[:, 1])
         result['KappaMax'], result['qmcMax'] = qmc[imax]
         return result
 
     def rescale(self, kappa):
-        result = {}
-        result['Ef'] = [self.exiFFT(f, int(kappa)) for f in self.F]
+        result = {'Ef': [self.exiFFT(f, int(kappa)) for f in self.F]}
         res = np.linalg.lstsq(self.Xx, self.multi_exiFFT(self.F, int(kappa)))
         result['A'] = res[0][1:]
         if self.X is list:
