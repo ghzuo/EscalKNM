@@ -17,9 +17,9 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 import os
 
 # the super directory of data
-superpath = os.path.expanduser('~') + "/data/gromacs/"
-superpath += "data.Villin/2f4k/"
+gmxpath = os.path.expanduser('~') + "/data/gromacs/"
+superpath = gmxpath + "data.Villin/2f4k/"
 
 # the subdirectories
 unfoldpath = f"{superpath}unfolding/"
-datapath = f"{superpath}unfolding/cluster-360-step50/clust-gromos_0.6-gro/330/"
+datapath   = f"{superpath}htSeed/unfolding.360.step50/clust-gromos_0.6/298/"
