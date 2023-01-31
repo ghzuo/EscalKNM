@@ -10,12 +10,14 @@ The EscalKMN algorithm mapped simulation trajectories into an orthogonal functio
 - notebook: Jupyter Notebook scripts for analyzing MD trajectories and plot result
 - gmxtools: Scripts for executing Gromacs analysis tools in batch mode
 
-## Dependentment
+## Dependencies
 
 - Python, Jupyter Notebook
 - Numpy, Pandas, Matplotlib, Seaborn
 - Sklearn, Sklearn_extra, pyEMMA
 
-## Reference
+## Citation
+
+If you use PyEMMA in scientific work, please cite:
 
 - Zhenyu Wang, Xin Zhou and Guanghong Zuo, “EspcTM: Kinetic Transition Network based on Trajectory Mapping in Effective Energy Rescaling Space” Frontiers in Molecular Biosciences, 7, 589718, 2020
