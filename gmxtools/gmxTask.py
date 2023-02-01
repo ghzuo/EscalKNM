@@ -10,39 +10,34 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-03 19:29:45
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-01-31 19:14:40
+@Last Modified Time: 2023-02-01 16:29:54
 '''
 
 import sys
-import base
-import potential
+import toolkits
+import caRMS
 import rama
-import rms
+import potential
 
 
-def comlist(task, theOpts):
-    if task == "potential":
-        return potential.comlist(theOpts)
-    elif task == 'rama':
-        return rama.comlist(theOpts)
-    elif task == 'CaRMS':
-        return rms.comlist(theOpts)
+# All function and label
+funct = {'rama': rama.comlist,
+         'potential': potential.comlist,
+         'caRMS': caRMS.comlist
+         }
+
+# Check the setting
+if len(sys.argv) == 1:
+    print("Please input the task\n")
+    exit(1)
+tasks = funct.keys() if (sys.argv[1] == "All") else sys.argv[1].split(',')
+theOpts = toolkits.parseOpts(sys.argv[2:])
+joblist = []
+for task in tasks:
+    if task in funct:
+        joblist.extend(funct[task](theOpts))
     else:
         print("Unknow task: ", task)
-        return []
 
-
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print("Please input the task\n")
-        exit(1)
-    tasks = []
-    if (sys.argv[1] == "All"):
-        tasks = ["potential", "rama", "CaRMS"]
-    else:
-        tasks = sys.argv[1].split(',')
-    theOpts = base.parseOpts(sys.argv[2:])
-    joblist = []
-    for task in tasks:
-        joblist.extend(comlist(task, theOpts))
-    base.do_jobs(joblist, theOpts)
+# execute jobs
+toolkits.do_jobs(joblist, theOpts)

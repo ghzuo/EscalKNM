@@ -10,17 +10,17 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-05 12:39:17
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-01-31 19:06:16
+@Last Modified Time: 2023-02-01 16:11:58
 '''
 
 
 import sys
-import base
+import toolkits
 
 
 def comlist(opts):
     clist = []
-    for fn in base.find_file(f"./**/{opts['traj']}.xtc"):
+    for fn in toolkits.find_file(f"./**/{opts['traj']}.xtc"):
         cstr = "echo '3\n3\n' | gmx rms -f " + fn
         cstr += " -o " + fn.replace(".xtc", "-CaRMS.xvg")
         if 'tpr' in opts:
@@ -32,6 +32,6 @@ def comlist(opts):
 
 
 if __name__ == "__main__":
-    theOpts = base.parseOpts(sys.argv[1:])
+    theOpts = toolkits.parseOpts(sys.argv[1:])
     joblist = comlist(theOpts)
-    base.do_jobs(joblist, theOpts)
+    toolkits.do_jobs(joblist, theOpts)

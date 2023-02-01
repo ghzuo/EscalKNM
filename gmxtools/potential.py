@@ -10,17 +10,17 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-05 12:39:56
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-01-31 19:09:57
+@Last Modified Time: 2023-02-01 16:12:16
 '''
 
 
 import sys
-import base
+import toolkits
 
 
 def comlist(opts):
     clist = []
-    for fn in base.find_file(f"./**/{opts['traj']}.edr"):
+    for fn in toolkits.find_file(f"./**/{opts['traj']}.edr"):
         ofile = fn.replace(".edr", "-potential.xvg")
         cstr = f"echo 11 | gmx energy -f {fn} -o {ofile}"
         clist.append(cstr)
@@ -28,6 +28,6 @@ def comlist(opts):
 
 
 if __name__ == "__main__":
-    theOpts = base.parseOpts(sys.argv[1:])
+    theOpts = toolkits.parseOpts(sys.argv[1:])
     joblist = comlist(theOpts)
-    base.do_jobs(joblist, theOpts)
+    toolkits.do_jobs(joblist, theOpts)

@@ -1,8 +1,8 @@
 # EscalKMN
 
-EscalKMN stands for "Effective Energy Rescaling Kinetic Markov Network". It is a package for the analysis of extensive molecular dynamics simulations and plotting results based on Jupyter Notebook tools.
+EscalKMN stands for "Effective Energy Rescaling Kinetic Network Model". It is a Python package for analyzing molecular dynamics simulations based on the effective energy and plotting results based on Jupyter Notebook tools.
 
-The EscalKMN algorithm mapped simulation trajectories into an orthogonal function space, whose bases were rescaled by effective energy, and clustered the interrelation between these trajectories to locate metastable states. Here the effective energy, which was filtered from the total potential energy of simulation trajectories by fast Fourier transform (FFT) and multiple linear regression, is an efficacious order parameter to describe the slow conformational change of complex system. Finally, Markov kinetic network is constructed based on the transitions between these metastable states.
+The effective energy, which was filtered from the total potential energy of simulation trajectories by fast Fourier transform (FFT) and multiple linear regression, is an efficacious order parameter to describe the slow conformational change of the complex system. Recently, the EspcTM algorithm had been published. It mapped simulation trajectories into an orthogonal function space, whose bases were rescaled by effective energy, and clustered the interrelation between these trajectories to locate metastable states, and Markov kinetic network is constructed based on the transitions between these metastable states. And other analysis algorithms and tools are in development.
 
 ## Main modules
 
@@ -18,6 +18,6 @@ The EscalKMN algorithm mapped simulation trajectories into an orthogonal functio
 
 ## Citation
 
-If you use PyEMMA in scientific work, please cite:
+If you use EscalKNM in scientific work, please cite:
 
 - Zhenyu Wang, Xin Zhou and Guanghong Zuo, “EspcTM: Kinetic Transition Network based on Trajectory Mapping in Effective Energy Rescaling Space” Frontiers in Molecular Biosciences, 7, 589718, 2020
