@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-09-28 10:22:36
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-09-28 10:31:14
+@Last Modified Time: 2023-02-10 17:10:22
 '''
 
 
@@ -18,8 +18,8 @@ import os
 
 # the super directory of data
 gmxpath = os.path.expanduser('~') + "/data/gromacs/"
-superpath = gmxpath + "data.Villin/2f4k/"
+superpath = f"{gmxpath}data.Villin/2f4k/"
 
 # the subdirectories
 unfoldpath = f"{superpath}unfolding/"
-datapath   = f"{superpath}htSeed/unfolding.360.step50/clust-gromos_0.6/298/"
+datapath = f"{superpath}htSeed/unfolding.360.step50/clust-gromos_0.6/298/"

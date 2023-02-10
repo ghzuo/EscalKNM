@@ -10,12 +10,12 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:22:39
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-08-25 11:18:22
+@Last Modified Time: 2023-02-10 17:38:10
 '''
 
 
 import numpy as np
-from EscalTools.dist import euclidean
+from basicTools.dist import euclidean
 
 
 # for sample the cluster point

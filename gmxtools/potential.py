@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-05 12:39:56
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-02-01 16:12:16
+@Last Modified Time: 2023-02-10 18:57:37
 '''
 
 
@@ -20,7 +20,7 @@ import toolkits
 
 def comlist(opts):
     clist = []
-    for fn in toolkits.find_file(f"./**/{opts['traj']}.edr"):
+    for fn in toolkits.find_file(f"./**/*{opts['traj']}.edr"):
         ofile = fn.replace(".edr", "-potential.xvg")
         cstr = f"echo 11 | gmx energy -f {fn} -o {ofile}"
         clist.append(cstr)

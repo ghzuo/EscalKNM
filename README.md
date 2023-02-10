@@ -6,8 +6,11 @@ The effective energy, which was filtered from the total potential energy of simu
 
 ## Main modules
 
-- lib: Basic libraries for performing the EscalKNM algorithms
-- notebook: Jupyter Notebook scripts for analyzing MD trajectories and plot result
+- toolkits: Basic tools for performing the EscalKNM algorithms
+- notebook: Jupyter Notebook scripts  
+  - EscalTM: Jupyter Notebook scripts for EscalTM method
+  - EscalMSM: Jupyter Notebook scripts for EscalMSM method
+  - Tools: Jupyter Notebook scripts for basic function
 - gmxtools: Scripts for executing Gromacs analysis tools in batch mode
 
 ## Dependencies
