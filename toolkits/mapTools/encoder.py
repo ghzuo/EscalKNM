@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2023-05-20 13:55:16
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-05-26 20:39:54
+@Last Modified Time: 2023-05-27 23:29:10
 '''
 
 import numpy as np
@@ -144,7 +144,7 @@ class EncoderNet:
             "Ee": np.split(Ee, len(self.fft.X)) if self.fft.X is list else Ee,
             'X': (features_in[0][0]
                   * self.net.features.weight).detach().numpy(),
-            'A': (self.net.features.weight*self.ys).detach().numpy()[0]
+            'A': self.net.features.weight.detach().numpy()[0]
         }
         handle.remove()
         return result
@@ -166,13 +166,14 @@ class MLP(torch.nn.Module):
     def __init__(self, nInput, **kwargs):
         super(MLP, self).__init__(**kwargs)
         self.__name__ = 'MLP'
-        nHalf = int(nInput/2)
-        self.input = torch.nn.Linear(nInput, nHalf)
-        self.act1 = torch.nn.Tanh()
-        self.hidden = torch.nn.Linear(nHalf, 2)
-        self.act2 = torch.nn.Tanh()
+        nHidden = int(nInput/2)
+        actfunc = torch.nn.Tanh
+        self.input = torch.nn.Linear(nInput, nHidden)
+        self.act1 = actfunc()
+        self.hidden = torch.nn.Linear(nHidden, 2)
+        self.act2 = actfunc()
         self.features = torch.nn.Linear(2, 1)
-        self.act3 = torch.nn.Tanh()
+        self.act3 = actfunc()
 
     def forward(self, x):
         a1 = self.act1(self.input(x))
