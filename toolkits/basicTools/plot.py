@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-03 16:18:21
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-05-04 08:16:56
+@Last Modified Time: 2023-05-26 10:57:05
 '''
 
 
@@ -44,7 +44,8 @@ def coefplot(ys, ax=None):
 
 
 def efplot(E0, Ef, Ey):
-    plt.figure(22, figsize=(16, 8))
+    plt.figure(22, figsize=(16, 7))
+    plt.subplots_adjust(wspace=0.25)
     plt.subplot(121)
     scale = (np.sqrt((np.var(E0)/np.var(Ey)))//10)*10
     plt.plot((E0-np.mean(E0))/scale, 'c-',
@@ -66,14 +67,19 @@ def efplot(E0, Ef, Ey):
 
 
 def clplot(score, cl, lab):
+    # sort the clusters
+    a = pd.DataFrame(np.unique(cl, return_index=True)).T.sort_values(by=[1])
+    mx = pd.Series(index=a[0], data=np.arange(0, len(a))+1)
+    clx = list(map(lambda e: mx[e], cl))
+
     # plot data
-    plt.figure(22, figsize=(20, 10))
+    plt.figure(22, figsize=(16, 7))
     ax = plt.subplot(121)
     score.plot(marker="o", ax=ax)
 
     plt.subplot(222)
-    plt.plot(cl, "ro-", label=lab)
-    plt.legend()
+    plt.plot(clx, "ro-", ms=8, label=lab)
+    plt.legend(handlelength=0, markerscale=0)
 
     plt.subplot(224)
-    pd.value_counts(cl).plot.bar(rot=0)
+    (pd.value_counts(clx, sort=False)/len(clx)).plot.bar(rot=0)

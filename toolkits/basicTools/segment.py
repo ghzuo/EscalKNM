@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:22:39
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-02-10 17:38:10
+@Last Modified Time: 2023-05-27 08:39:52
 '''
 
 
@@ -31,7 +31,8 @@ def medoid(data, step=100, width=200, dist=euclidean):
         segment = data[idx:idx+width]
         dmat = dist(segment)
         dsum = np.array(np.sum(dmat, axis=0)).reshape(width)
-        mat = np.append(mat, segment[np.where(dsum == np.min(dsum))], axis=0)
+        mat = np.append(mat, segment[np.argmin(dsum)]
+                        .reshape(1, data.shape[1]), axis=0)
     return np.matrix(mat)
 
 

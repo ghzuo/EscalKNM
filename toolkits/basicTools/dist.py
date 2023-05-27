@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:25:17
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2022-10-14 09:16:23
+@Last Modified Time: 2023-05-26 13:36:12
 '''
 
 
@@ -22,16 +22,14 @@ def expm(data, lam=0.01):
     mat = []
     for i in data:
         mat.extend(np.exp(- lam*np.linalg.norm(i - j)) for j in data)
-    mat = np.matrix(mat).reshape(len(data), len(data))
-    return mat
+    return np.matrix(mat).reshape(len(data), len(data))
 
 
 def manhattan(data):
     mat = []
     for i in data:
         mat.extend(np.sum([abs(vi-vj) for vi, vj in zip(i, j)]) for j in data)
-    mat = np.matrix(mat).reshape(len(data), len(data))
-    return mat
+    return np.matrix(mat).reshape(len(data), len(data))
 
 
 def euclidean(data):

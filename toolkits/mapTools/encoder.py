@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2023-05-20 13:55:16
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-05-25 13:13:38
+@Last Modified Time: 2023-05-26 20:39:54
 '''
 
 import numpy as np
@@ -41,8 +41,7 @@ class EncoderNet:
         self.shuffle = shuffle
         self.njobs = njobs
         self.optim = optim(self.net.parameters(), lr)
-        self.X, self.Xm, self.Xs = normlize(
-            torch.tensor(self.fft.Xx, dtype=torch.float))
+        self.X = torch.tensor(self.fft.Xx, dtype=torch.float)
 
     def infoLevel(self, info):
         self.info = info
@@ -145,7 +144,37 @@ class EncoderNet:
             "Ee": np.split(Ee, len(self.fft.X)) if self.fft.X is list else Ee,
             'X': (features_in[0][0]
                   * self.net.features.weight).detach().numpy(),
-            'A': (self.net.features.weight*self.ys/self.Xs).detach().numpy()[0]
+            'A': (self.net.features.weight*self.ys).detach().numpy()[0]
         }
         handle.remove()
         return result
+
+
+# the linear regression
+class LR(torch.nn.Module):
+    def __init__(self, nInput, **kwargs):
+        super(LR, self).__init__(**kwargs)
+        self.__name__ = 'LR'
+        self.features = torch.nn.Linear(nInput, 1)
+
+    def forward(self, x):
+        return self.features(x)
+
+
+# the multi-layer Perceptron
+class MLP(torch.nn.Module):
+    def __init__(self, nInput, **kwargs):
+        super(MLP, self).__init__(**kwargs)
+        self.__name__ = 'MLP'
+        nHalf = int(nInput/2)
+        self.input = torch.nn.Linear(nInput, nHalf)
+        self.act1 = torch.nn.Tanh()
+        self.hidden = torch.nn.Linear(nHalf, 2)
+        self.act2 = torch.nn.Tanh()
+        self.features = torch.nn.Linear(2, 1)
+        self.act3 = torch.nn.Tanh()
+
+    def forward(self, x):
+        a1 = self.act1(self.input(x))
+        a2 = self.act2(self.hidden(a1))
+        return self.act3(self.features(a2))
