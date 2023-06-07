@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-03 16:18:21
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-05-26 10:57:05
+@Last Modified Time: 2023-06-05 11:07:58
 '''
 
 
@@ -27,6 +27,34 @@ def implot(mat, ax=None):
     if ax is None:
         ax = plt.subplot()
     im = ax.imshow(mat, interpolation='nearest', cmap=cm.jet)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.2)
+    plt.colorbar(im, cax=cax)
+
+
+def feplot(mat, ax=None):
+    if ax is None:
+        ax = plt.subplot()
+    im = ax.contourf(mat, cmap=cm.jet)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.2)
+    plt.colorbar(im, cax=cax)
+
+
+def distr_plot(feature):
+    xd = feature[:, 0]
+    yd = feature[:, 1]
+    plt.figure(12, figsize=(16, 7))
+    ax = plt.subplot(121)
+    ax.scatter(xd, yd, s=5)
+    ax = plt.subplot(122)
+    hist = np.histogram2d(xd, yd, 20)
+    fe = -np.log(hist[0]/len(feature))
+    cutoff = np.percentile(fe, 80)
+    fe[fe > cutoff] = np.nan
+    xl = (hist[1][1:] + hist[1][:-1])/2
+    yl = (hist[2][1:] + hist[2][:-1])/2
+    im = plt.contourf(xl, yl, fe.T, levels=6, cmap=cm.rainbow)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.2)
     plt.colorbar(im, cax=cax)

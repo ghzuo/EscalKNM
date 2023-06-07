@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2023-05-20 13:55:16
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-05-27 23:29:10
+@Last Modified Time: 2023-06-06 19:56:19
 '''
 
 import numpy as np
@@ -112,10 +112,14 @@ class EncoderNet:
                 self.train(X_T, y_T, n_epochs=n_epochs)
                 self.validate(X_V, y_V, f"Summary for fold ({i+1}/{kfold}):")
 
-    def score(self, kmax=50, n_epochs=2):
+    def score(self, kmax=50, kmin=2, nk=100, n_epochs=2):
         # type the kappa
-        kmax = min([kmax, len(self.fft.F[0])])
-        qmc = np.array([range(2, kmax), np.zeros(kmax-2)]).T
+        kmax = len(self.fft.F[0]) if kmax < kmin else min(
+            [kmax, len(self.fft.F[0])])
+        kmin = max(kmin, 2)
+        ksep = int((kmax - kmin)/nk)+1
+        klist = np.arange(kmin, kmax, ksep)
+        qmc = np.array([klist, np.zeros(len(klist))]).T
         for item in qmc:
             self.setY(item[0])
             self.train(self.X, self.y, n_epochs=n_epochs)
@@ -135,19 +139,34 @@ class EncoderNet:
         self.validate(self.X, self.y, f"Validate for Scaling (kappa={kappa}):")
 
         # add hook on features layer
-        features_in = []
-        handle = self.net.features.register_forward_hook(
-            hook=lambda module, fin, fout: features_in.append(fin))
+        features = []
+        handle = self.net.output.register_forward_hook(
+            hook=lambda module, fin, fout: features.append(fin))
         # get the effect energy and features
         Ee = deNormlize(self.net(self.X), self.ym, self.ys).detach().numpy()
         result = {
             "Ee": np.split(Ee, len(self.fft.X)) if self.fft.X is list else Ee,
-            'X': (features_in[0][0]
-                  * self.net.features.weight).detach().numpy(),
-            'A': self.net.features.weight.detach().numpy()[0]
+            'X': (features[0] * self.net.output.weight).detach().numpy()
+            if self.net.__name__ == 'LR'
+            else features[0][0].detach().numpy(),
+            'A': self.net.output.weight.detach().numpy()[0]
         }
         handle.remove()
         return result
+
+
+# the square layer
+class Square(torch.nn.Module):
+    def __init__(self, in_features, out_features):
+        super().__init__()
+        self.weight = torch.nn.Parameter(
+            torch.randn(in_features*2, out_features))
+        self.bias = torch.nn.Parameter(torch.randn(out_features,))
+
+    def forward(self, x):
+        xx = torch.square(x)
+        return torch.matmul(torch.concat((xx, x), 1),
+                            self.weight.detach()) + self.bias.detach()
 
 
 # the linear regression
@@ -155,10 +174,10 @@ class LR(torch.nn.Module):
     def __init__(self, nInput, **kwargs):
         super(LR, self).__init__(**kwargs)
         self.__name__ = 'LR'
-        self.features = torch.nn.Linear(nInput, 1)
+        self.output = torch.nn.Linear(nInput, 1)
 
     def forward(self, x):
-        return self.features(x)
+        return self.output(x)
 
 
 # the multi-layer Perceptron
@@ -166,16 +185,17 @@ class MLP(torch.nn.Module):
     def __init__(self, nInput, **kwargs):
         super(MLP, self).__init__(**kwargs)
         self.__name__ = 'MLP'
-        nHidden = int(nInput/2)
-        actfunc = torch.nn.Tanh
+        nHidden = nInput
+        actfunc = torch.nn.ELU
         self.input = torch.nn.Linear(nInput, nHidden)
         self.act1 = actfunc()
         self.hidden = torch.nn.Linear(nHidden, 2)
         self.act2 = actfunc()
-        self.features = torch.nn.Linear(2, 1)
+        self.output = Square(2, 1)
+        # self.output = torch.nn.Linear(2, 1)
         self.act3 = actfunc()
 
     def forward(self, x):
-        a1 = self.act1(self.input(x))
-        a2 = self.act2(self.hidden(a1))
-        return self.act3(self.features(a2))
+        out1 = self.act1(self.input(x))
+        out2 = self.act2(self.hidden(out1 + x))
+        return self.output(out2)
