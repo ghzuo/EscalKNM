@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2023-05-20 13:55:16
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-06-06 19:56:19
+@Last Modified Time: 2023-06-08 18:00:51
 '''
 
 import numpy as np
@@ -106,7 +106,7 @@ class EncoderNet:
             self.validate(
                 self.X, self.y, f"Validate for PreTrain (kappa={kappa}):")
         else:
-            for i in range(0, kfold):
+            for i in range(kfold):
                 X_T, y_T, X_V, y_V = self.get_kfold_data(
                     kfold, i, self.X, self.y)
                 self.train(X_T, y_T, n_epochs=n_epochs)
