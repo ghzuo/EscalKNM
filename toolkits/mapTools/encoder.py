@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2023-05-20 13:55:16
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-06-08 18:00:51
+@Last Modified Time: 2023-07-23 14:19:11
 '''
 
 import numpy as np
@@ -146,13 +146,18 @@ class EncoderNet:
         Ee = deNormlize(self.net(self.X), self.ym, self.ys).detach().numpy()
         result = {
             "Ee": np.split(Ee, len(self.fft.X)) if self.fft.X is list else Ee,
-            'X': (features[0] * self.net.output.weight).detach().numpy()
-            if self.net.__name__ == 'LR'
-            else features[0][0].detach().numpy(),
+            'X': (features[0][0] * self.net.output.weight).detach().numpy(),
             'A': self.net.output.weight.detach().numpy()[0]
         }
         handle.remove()
         return result
+
+    def get_saliency(self):
+        self.net.eval()
+        self.X.requires_grad_()
+        ys = self.net.forward(self.X)
+        ys.backward(torch.ones_like(ys))
+        return abs(self.X.grad.data.detach().numpy())
 
 
 # the square layer
@@ -181,21 +186,40 @@ class LR(torch.nn.Module):
 
 
 # the multi-layer Perceptron
-class MLP(torch.nn.Module):
-    def __init__(self, nInput, **kwargs):
-        super(MLP, self).__init__(**kwargs)
-        self.__name__ = 'MLP'
-        nHidden = nInput
+class MLP2L(torch.nn.Module):
+    def __init__(self, nInput, nFeature=2, **kwargs):
+        super(MLP2L, self).__init__(**kwargs)
+        self.__name__ = 'MLP2L'
         actfunc = torch.nn.ELU
-        self.input = torch.nn.Linear(nInput, nHidden)
-        self.act1 = actfunc()
-        self.hidden = torch.nn.Linear(nHidden, 2)
-        self.act2 = actfunc()
-        self.output = Square(2, 1)
-        # self.output = torch.nn.Linear(2, 1)
-        self.act3 = actfunc()
+        self.input = torch.nn.Linear(nInput, nInput)
+        self.actI = actfunc()
+        self.feature = torch.nn.Linear(nInput, nFeature)
+        self.actF = actfunc()
+        self.output = torch.nn.Linear(nFeature, 1)
 
     def forward(self, x):
-        out1 = self.act1(self.input(x))
-        out2 = self.act2(self.hidden(out1 + x))
-        return self.output(out2)
+        outI = self.actI(self.input(x))
+        outF = self.actF(self.feature(outI + x))
+        return self.output(outF)
+
+
+class MLP3L(torch.nn.Module):
+    def __init__(self, nInput, nHidden=0, nFeature=2, **kwargs):
+        super(MLP3L, self).__init__(**kwargs)
+        self.__name__ = 'MLP3L'
+        if nHidden == 0:
+            nHidden = nInput
+        actfunc = torch.nn.ELU
+        self.input = torch.nn.Linear(nInput, nHidden)
+        self.actI = actfunc()
+        self.hidden = torch.nn.Linear(nHidden, nHidden)
+        self.actH = actfunc()
+        self.feature = torch.nn.Linear(nHidden, nFeature)
+        self.actF = actfunc()
+        self.output = torch.nn.Linear(nFeature, 1)
+
+    def forward(self, x):
+        outI = self.actI(self.input(x))
+        outH = self.actH(self.hidden(outI))
+        outF = self.actF(self.feature(outH))
+        return self.output(outF)

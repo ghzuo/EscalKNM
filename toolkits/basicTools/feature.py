@@ -10,13 +10,21 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:36:20
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-05-26 08:16:30
+@Last Modified Time: 2023-07-23 13:02:55
 '''
 
 import numpy as np
+import pandas as pd
 
 
-def dih2X(dih):
+def dih2X(file, quiet=False):
+    # read the file
+    dih = pd.DataFrame(np.loadtxt(file, comments=["@", "#"],
+                                  dtype={'names': ('Phi', 'Psi', 'Residue'),
+                                         'formats': ('f', 'f', 'S7')}))
+    if not quiet:
+        print("The shape of input dihedral is: ", dih.shape)
+
     # set the dih
     nres = dih['Residue'].nunique()
     dih['frame'] = dih.index // nres
@@ -40,3 +48,16 @@ def dihCombind(dihs):
         np.sqrt(dihs[i] * dihs[i] + dihs[i + 1] * dihs[i + 1])
         for i in range(0, len(dihs), 2)
     ]
+
+
+def dihCombind2D(dihs):
+    return np.stack([np.sqrt(dihs[:, i] * dihs[:, i]
+                             + dihs[:, i + 1] * dihs[:, i + 1])
+                     for i in range(0, dihs.shape[1], 2)])
+
+
+def dist2X(file, quiet=False):
+    dist = pd.DataFrame(np.loadtxt(file, comments=["@", "#"]))
+    if not quiet:
+        print("The shape of input distance is: ", dist.shape)
+    return dist.loc[:, 1:]

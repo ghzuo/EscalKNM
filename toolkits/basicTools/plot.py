@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-03 16:18:21
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-06-05 11:07:58
+@Last Modified Time: 2023-07-23 13:10:38
 '''
 
 
@@ -69,6 +69,27 @@ def coefplot(ys, ax=None):
         ax.plot(x, y, 'o', ms=20, lw=2, alpha=0.7, mfc='yellow')
         ax.text(x, y, '%d' % (int(x)), fontsize=12,
                 horizontalalignment='center', verticalalignment='center')
+
+
+def saliplot(ys, ax=None):
+    if ax is None:
+        ax = plt.subplot()
+    _ = ax.boxplot(ys, patch_artist=True, showfliers=False)
+    ax.xaxis.set_tick_params(rotation=45)
+
+
+def e3traj(E0, Ef, Ey):
+    scale = (np.sqrt((np.var(E0)/np.var(Ey)))//10)*10
+    plt.plot((E0-np.mean(E0))/scale, 'c-',
+             label="Raw Data (/{:.0f})".format(scale))
+    plt.plot(Ey-np.mean(Ey), "r-", label="Effective Energy")
+    Efmean = np.mean(Ef)
+    plt.plot(Ef[0]-Efmean, "b-", lw=5, label="iFFT Energy")
+    xbeg = len(Ef[0])
+    for ef in Ef[1:]:
+        xend = xbeg + len(ef)
+        plt.plot(range(xbeg, xend), ef-Efmean, "b-", lw=5)
+        xbeg = xend
 
 
 def efplot(E0, Ef, Ey):
