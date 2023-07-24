@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-08-21 22:36:20
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-07-23 13:02:55
+@Last Modified Time: 2023-07-24 20:31:59
 '''
 
 import numpy as np
@@ -44,16 +44,13 @@ def dih2X(file, quiet=False):
 
 
 def dihCombind(dihs):
-    return [
-        np.sqrt(dihs[i] * dihs[i] + dihs[i + 1] * dihs[i + 1])
-        for i in range(0, len(dihs), 2)
-    ]
-
-
-def dihCombind2D(dihs):
-    return np.stack([np.sqrt(dihs[:, i] * dihs[:, i]
-                             + dihs[:, i + 1] * dihs[:, i + 1])
-                     for i in range(0, dihs.shape[1], 2)])
+    if dihs.ndim == 1:
+        return [np.sqrt(dihs[i] * dihs[i] + dihs[i + 1] * dihs[i + 1])
+                for i in range(0, len(dihs), 2)]
+    else:
+        return np.stack([np.sqrt(dihs[:, i] * dihs[:, i]
+                                 + dihs[:, i + 1] * dihs[:, i + 1])
+                         for i in range(0, dihs.shape[1], 2)])
 
 
 def dist2X(file, quiet=False):

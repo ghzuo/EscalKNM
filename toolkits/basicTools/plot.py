@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2022-07-03 16:18:21
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-07-23 13:10:38
+@Last Modified Time: 2023-07-24 20:12:30
 '''
 
 
@@ -74,7 +74,10 @@ def coefplot(ys, ax=None):
 def saliplot(ys, ax=None):
     if ax is None:
         ax = plt.subplot()
-    _ = ax.boxplot(ys, patch_artist=True, showfliers=False)
+    _ = ax.boxplot(ys, patch_artist=True, showfliers=False, showmeans=True,
+                   medianprops={'lw': 2, 'color': 'orange'},
+                   meanprops={'marker': 'o', 'mec': 'yellow',
+                              'mfc': 'yellow', 'markersize': 10})
     ax.xaxis.set_tick_params(rotation=45)
 
 

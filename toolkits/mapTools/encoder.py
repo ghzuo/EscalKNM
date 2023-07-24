@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2023-05-20 13:55:16
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-07-23 14:19:11
+@Last Modified Time: 2023-07-24 19:56:56
 '''
 
 import numpy as np
@@ -157,6 +157,8 @@ class EncoderNet:
         self.X.requires_grad_()
         ys = self.net.forward(self.X)
         ys.backward(torch.ones_like(ys))
+        self.X.requires_grad = False
+        self.net.train()
         return abs(self.X.grad.data.detach().numpy())
 
 
@@ -204,11 +206,13 @@ class MLP2L(torch.nn.Module):
 
 
 class MLP3L(torch.nn.Module):
-    def __init__(self, nInput, nHidden=0, nFeature=2, **kwargs):
+    def __init__(self, nInput, nHidden=0, nFeature=0, **kwargs):
         super(MLP3L, self).__init__(**kwargs)
         self.__name__ = 'MLP3L'
         if nHidden == 0:
             nHidden = nInput
+        if nFeature == 0:
+            nFeature = nHidden
         actfunc = torch.nn.ELU
         self.input = torch.nn.Linear(nInput, nHidden)
         self.actI = actfunc()
@@ -221,5 +225,5 @@ class MLP3L(torch.nn.Module):
     def forward(self, x):
         outI = self.actI(self.input(x))
         outH = self.actH(self.hidden(outI))
-        outF = self.actF(self.feature(outH))
+        outF = self.actF(self.feature(outH+outI))
         return self.output(outF)
