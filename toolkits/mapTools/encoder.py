@@ -10,7 +10,7 @@ Dr. Guanghong Zuo <ghzuo@ucas.ac.cn>
 @Author: Dr. Guanghong Zuo
 @Date: 2023-05-20 13:55:16
 @Last Modified By: Dr. Guanghong Zuo
-@Last Modified Time: 2023-07-24 19:56:56
+@Last Modified Time: 2023-07-25 11:01:58
 '''
 
 import numpy as np
@@ -40,7 +40,7 @@ class EncoderNet:
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.njobs = njobs
-        self.optim = optim(self.net.parameters(), lr)
+        self.optim = optim(self.net.parameters(), lr, weight_decay=0.0005)
         self.X = torch.tensor(self.fft.Xx, dtype=torch.float)
 
     def infoLevel(self, info):
@@ -225,5 +225,5 @@ class MLP3L(torch.nn.Module):
     def forward(self, x):
         outI = self.actI(self.input(x))
         outH = self.actH(self.hidden(outI))
-        outF = self.actF(self.feature(outH+outI))
+        outF = self.actF(self.feature(outH))
         return self.output(outF)
